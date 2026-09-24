@@ -1,353 +1,609 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ENY24 - Nepal Local Marketplace</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<meta charset="UTF-8">
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f7f7f7;
-            color: #222;
-        }
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-        header {
-            background: white;
-            border-bottom: 1px solid #ddd;
-            padding: 15px 6%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+<title>ENY24 - Everything Nearby</title>
 
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            color: #ff6f00;
-        }
+<style>
 
-        .location {
-            font-size: 14px;
-            color: #555;
-        }
+/* =========================
+   GLOBAL
+========================= */
 
-        .search {
-            flex: 1;
-            max-width: 500px;
-        }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        .search input {
-            width: 100%;
-            padding: 12px 18px;
-            border: 1px solid #ddd;
-            border-radius: 25px;
-            font-size: 15px;
-            outline: none;
-        }
+body {
+    font-family: Arial, sans-serif;
+    background: #f7f7f7;
+    color: #222;
+}
 
-        .sell-button {
-            background: #ff6f00;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 22px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+:root {
+    --nepal-red: #dc143c;
+    --nepal-blue: #003893;
+    --light-red: #fff0f3;
+    --light-blue: #eef4ff;
+    --border: #e5e5e5;
+}
 
-        .sell-button:hover {
-            opacity: 0.9;
-        }
+/* =========================
+   HEADER
+========================= */
 
-        .hero {
-            padding: 55px 6%;
-            background: linear-gradient(135deg, #fff4e8, #ffffff);
-        }
+header {
+    background: white;
+    border-bottom: 3px solid var(--nepal-red);
+    padding: 14px 6%;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
 
-        .hero h1 {
-            font-size: 42px;
-            margin-bottom: 12px;
-        }
+.logo {
+    font-size: 29px;
+    font-weight: bold;
+    color: var(--nepal-red);
+    white-space: nowrap;
+}
 
-        .hero h1 span {
-            color: #ff6f00;
-        }
+.logo span {
+    color: var(--nepal-blue);
+}
 
-        .hero p {
-            color: #666;
-            font-size: 18px;
-            margin-bottom: 25px;
-        }
+.location {
+    color: #555;
+    font-size: 14px;
+    white-space: nowrap;
+}
 
-        .hero button {
-            background: #ff6f00;
-            color: white;
-            border: none;
-            padding: 14px 25px;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-        }
+.search {
+    flex: 1;
+}
 
-        main {
-            padding: 35px 6%;
-        }
+.search input {
+    width: 100%;
+    padding: 12px 18px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-size: 15px;
+    outline: none;
+}
 
-        /* SELL FORM */
+.search input:focus {
+    border-color: var(--nepal-blue);
+}
 
-        #sell-section {
-            display: none;
-            background: white;
-            padding: 25px;
-            margin-bottom: 35px;
-            border-radius: 15px;
-            border: 1px solid #eee;
-        }
+.post-button {
+    background: var(--nepal-red);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+}
 
-        #sell-section h2 {
-            margin-bottom: 20px;
-        }
+/* =========================
+   HERO
+========================= */
 
-        #sell-section input,
-        #sell-section textarea,
-        #sell-section select {
-            width: 100%;
-            padding: 13px;
-            margin-bottom: 13px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 15px;
-        }
+.hero {
+    padding: 60px 6%;
+    background: linear-gradient(
+        135deg,
+        var(--light-red),
+        white,
+        var(--light-blue)
+    );
+    border-bottom: 1px solid var(--border);
+}
 
-        #sell-section textarea {
-            resize: vertical;
-        }
+.hero h1 {
+    font-size: 44px;
+    margin-bottom: 15px;
+}
 
-        .publish-button {
-            background: #ff6f00;
-            color: white;
-            border: none;
-            padding: 13px 25px;
-            border-radius: 22px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+.hero h1 .red {
+    color: var(--nepal-red);
+}
 
-        .cancel-button {
-            margin-left: 10px;
-            padding: 13px 20px;
-            border: 1px solid #ddd;
-            background: white;
-            border-radius: 22px;
-            cursor: pointer;
-        }
+.hero h1 .blue {
+    color: var(--nepal-blue);
+}
 
-        #sell-message {
-            margin-top: 15px;
-            font-size: 14px;
-        }
+.hero p {
+    max-width: 750px;
+    color: #666;
+    font-size: 18px;
+    line-height: 1.6;
+}
 
-        /* CATEGORIES */
+.hero-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+}
 
-        .section-title {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
+.hero-primary {
+    background: var(--nepal-red);
+    color: white;
+    border: none;
+    padding: 13px 22px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+}
 
-        .categories {
-            display: flex;
-            gap: 15px;
-            overflow-x: auto;
-            padding-bottom: 15px;
-        }
+.hero-secondary {
+    background: white;
+    color: var(--nepal-blue);
+    border: 1px solid var(--nepal-blue);
+    padding: 13px 22px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+}
 
-        .category {
-            min-width: 110px;
-            background: white;
-            border: 1px solid #eee;
-            border-radius: 15px;
-            padding: 18px 10px;
-            text-align: center;
-            cursor: pointer;
-        }
+/* =========================
+   MAIN
+========================= */
 
-        .category:hover {
-            border-color: #ff6f00;
-        }
+main {
+    padding: 35px 6%;
+}
 
-        .category-icon {
-            font-size: 28px;
-            margin-bottom: 8px;
-        }
+.section-title {
+    font-size: 24px;
+    margin-bottom: 18px;
+}
 
-        .category p {
-            font-size: 14px;
-        }
+/* =========================
+   SERVICES
+========================= */
 
-        /* PRODUCTS */
+.services {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 40px;
+}
 
-        .products {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-        }
+.service-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    cursor: pointer;
+    transition: .2s;
+}
 
-        .product {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            border: 1px solid #eee;
-        }
+.service-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--nepal-red);
+}
 
-        .product-image {
-            height: 190px;
-            background: #eee;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 55px;
-        }
+.service-icon {
+    font-size: 38px;
+    margin-bottom: 12px;
+}
 
-        .product-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+.service-card h3 {
+    margin-bottom: 8px;
+}
 
-        .product-info {
-            padding: 15px;
-        }
+.service-card p {
+    color: #777;
+    font-size: 14px;
+    line-height: 1.5;
+}
 
-        .product-name {
-            font-weight: bold;
-            margin-bottom: 7px;
-        }
+/* =========================
+   CATEGORIES
+========================= */
 
-        .price {
-            font-size: 18px;
-            font-weight: bold;
-            color: #ff6f00;
-            margin-bottom: 7px;
-        }
+.categories {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 15px;
+    margin-bottom: 35px;
+}
 
-        .place {
-            color: #777;
-            font-size: 13px;
-        }
+.category {
+    min-width: 110px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 16px 10px;
+    text-align: center;
+    cursor: pointer;
+}
 
-        .category-label {
-            margin-top: 8px;
-            color: #777;
-            font-size: 13px;
-        }
+.category:hover {
+    border-color: var(--nepal-blue);
+}
 
-        /* FOOTER */
+.category.active {
+    background: var(--nepal-blue);
+    color: white;
+    border-color: var(--nepal-blue);
+}
 
-        footer {
-            margin-top: 50px;
-            background: #222;
-            color: white;
-            padding: 35px 6%;
-            text-align: center;
-        }
+.category-icon {
+    font-size: 28px;
+    margin-bottom: 7px;
+}
 
-        footer p {
-            color: #bbb;
-            font-size: 14px;
-        }
+.category p {
+    font-size: 13px;
+}
 
-        /* MOBILE */
+/* =========================
+   LISTINGS
+========================= */
 
-        @media (max-width: 900px) {
+.listings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
 
-            .products {
-                grid-template-columns: repeat(2, 1fr);
-            }
+.filter-text {
+    color: #777;
+    font-size: 14px;
+}
 
-            header {
-                flex-wrap: wrap;
-            }
+.products {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
 
-            .search {
-                order: 3;
-                max-width: 100%;
-                width: 100%;
-            }
-        }
+.product {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: .2s;
+}
 
-        @media (max-width: 550px) {
+.product:hover {
+    transform: translateY(-3px);
+}
 
-            header {
-                padding: 12px 5%;
-            }
+.product-image {
+    height: 190px;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 55px;
+}
 
-            .logo {
-                font-size: 24px;
-            }
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
-            .hero {
-                padding: 40px 5%;
-            }
+.product-info {
+    padding: 15px;
+}
 
-            .hero h1 {
-                font-size: 32px;
-            }
+.product-name {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
 
-            main {
-                padding: 30px 5%;
-            }
+.price {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--nepal-red);
+    margin-bottom: 7px;
+}
 
-            .products {
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-            }
+.place {
+    color: #777;
+    font-size: 13px;
+    margin-bottom: 9px;
+}
 
-            .product-image {
-                height: 140px;
-            }
-        }
-    </style>
+.category-label {
+    display: inline-block;
+    background: var(--light-blue);
+    color: var(--nepal-blue);
+    padding: 5px 9px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+/* =========================
+   POST FORM
+========================= */
+
+#post-section {
+    display: none;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 35px;
+}
+
+#post-section h2 {
+    margin-bottom: 20px;
+}
+
+#post-form input,
+#post-form textarea,
+#post-form select {
+    width: 100%;
+    padding: 13px;
+    margin-bottom: 13px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+#post-form textarea {
+    resize: vertical;
+}
+
+/* =========================
+   IMAGE UPLOAD
+========================= */
+
+.image-upload-box {
+    margin-bottom: 15px;
+}
+
+.image-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.image-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.image-button {
+    flex: 1;
+    padding: 13px;
+    text-align: center;
+    border: 1px solid var(--nepal-blue);
+    color: var(--nepal-blue);
+    background: white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.image-button:hover {
+    background: var(--light-blue);
+}
+
+.image-url {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.image-preview {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.preview-item {
+    position: relative;
+    width: 110px;
+    height: 110px;
+}
+
+.preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+.remove-image {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 50%;
+    background: var(--nepal-red);
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 26px;
+}
+
+.publish-button {
+    background: var(--nepal-red);
+    color: white;
+    border: none;
+    padding: 13px 23px;
+    border-radius: 23px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.cancel-button {
+    margin-left: 8px;
+    padding: 13px 20px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 23px;
+    cursor: pointer;
+}
+
+#post-message {
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    margin-top: 60px;
+    background: var(--nepal-blue);
+    color: white;
+    padding: 40px 6%;
+    text-align: center;
+}
+
+footer p {
+    color: #d9e2ff;
+    margin-top: 9px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 900px) {
+
+    header {
+        flex-wrap: wrap;
+    }
+
+    .search {
+        order: 5;
+        width: 100%;
+        flex-basis: 100%;
+    }
+
+    .services {
+        grid-template-columns: 1fr;
+    }
+
+    .products {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 550px) {
+
+    header {
+        padding: 12px 5%;
+    }
+
+    .logo {
+        font-size: 24px;
+    }
+
+    .location {
+        font-size: 12px;
+    }
+
+    .hero {
+        padding: 45px 5%;
+    }
+
+    .hero h1 {
+        font-size: 32px;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+
+    .hero-actions {
+        flex-wrap: wrap;
+    }
+
+    main {
+        padding: 30px 5%;
+    }
+
+    .products {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .product-image {
+        height: 140px;
+    }
+
+    .product-name {
+        font-size: 14px;
+    }
+
+    .price {
+        font-size: 16px;
+    }
+
+    .image-buttons {
+        flex-direction: column;
+    }
+}
+
+</style>
+
 </head>
 
+
 <body>
+
 
 <!-- HEADER -->
 
 <header>
 
     <div class="logo">
-        ENY24
+        ENY<span>24</span>
     </div>
 
     <div class="location">
-        📍 Kathmandu, Nepal
+        📍 Nepal
     </div>
 
     <div class="search">
+
         <input
-            type="text"
             id="search-input"
-            placeholder="Search products near you..."
+            type="text"
+            placeholder="Search products, rooms, houses or jobs..."
         >
+
     </div>
 
     <button
-        class="sell-button"
-        id="open-sell"
+        id="open-post"
+        class="post-button"
         type="button"
     >
-        + Sell
+        + Post
     </button>
 
 </header>
@@ -358,72 +614,117 @@
 <section class="hero">
 
     <h1>
-        Buy & Sell <span>Nearby</span>
+        <span class="red">Everything</span>
+        <span class="blue">Nearby</span>
     </h1>
 
     <p>
-        Nepal's local marketplace for buying, selling and connecting
-        Everything Nearby you.
+        Buy and sell products, find rooms and houses,
+        rent apartments, and discover jobs near you.
     </p>
 
-    <button
-        type="button"
-        id="explore-button"
-    >
-        Explore Marketplace
-    </button>
+    <div class="hero-actions">
+
+        <button
+            id="explore-button"
+            class="hero-primary"
+            type="button"
+        >
+            Explore
+        </button>
+
+        <button
+            id="hero-post"
+            class="hero-secondary"
+            type="button"
+        >
+            Post Something
+        </button>
+
+    </div>
 
 </section>
 
 
 <main>
 
-    <!-- SELL FORM -->
 
-    <section id="sell-section">
+<!-- POST FORM -->
 
-        <h2>
-            Sell an Item
-        </h2>
+<section id="post-section">
 
-        <form id="sell-form">
+    <h2>
+        Create a Post
+    </h2>
 
-            <input
-                id="sell-title"
-                type="text"
-                placeholder="Product name"
-                required
-            >
+    <form id="post-form">
 
-            <textarea
-                id="sell-description"
-                placeholder="Describe your item"
-                rows="4"
-            ></textarea>
+        <select
+            id="listing-type"
+            required
+        >
 
-            <input
-                id="sell-price"
-                type="number"
-                placeholder="Price in NPR"
-                min="0"
-                required
-            >
+            <option value="">
+                What are you posting?
+            </option>
 
-            <input
-                id="sell-location"
-                type="text"
-                placeholder="Location (e.g. Kathmandu)"
-                required
-            >
+            <option value="Marketplace">
+                🛒 Buy / Sell
+            </option>
 
-            <select
-                id="sell-category"
-                required
-            >
+            <option value="Housing">
+                🏠 Room / Housing
+            </option>
 
-                <option value="">
-                    Select category
-                </option>
+            <option value="Jobs">
+                💼 Job
+            </option>
+
+        </select>
+
+
+        <input
+            id="post-title"
+            type="text"
+            placeholder="Title"
+            required
+        >
+
+
+        <textarea
+            id="post-description"
+            rows="4"
+            placeholder="Description"
+        ></textarea>
+
+
+        <input
+            id="post-price"
+            type="number"
+            min="0"
+            placeholder="Price / Rent / Salary in NPR"
+            required
+        >
+
+
+        <input
+            id="post-location"
+            type="text"
+            placeholder="Location (e.g. Kathmandu)"
+            required
+        >
+
+
+        <select
+            id="post-category"
+            required
+        >
+
+            <option value="">
+                Select category
+            </option>
+
+            <optgroup label="Marketplace">
 
                 <option value="Mobiles">
                     Mobiles
@@ -437,16 +738,12 @@
                     Vehicles
                 </option>
 
-                <option value="Property">
-                    Property
+                <option value="Furniture">
+                    Furniture
                 </option>
 
                 <option value="Fashion">
                     Fashion
-                </option>
-
-                <option value="Furniture">
-                    Furniture
                 </option>
 
                 <option value="Books">
@@ -457,98 +754,394 @@
                     Sports
                 </option>
 
-            </select>
+            </optgroup>
+
+
+            <optgroup label="Housing">
+
+                <option value="Room for Rent">
+                    Room for Rent
+                </option>
+
+                <option value="Apartment for Rent">
+                    Apartment for Rent
+                </option>
+
+                <option value="House for Rent">
+                    House for Rent
+                </option>
+
+                <option value="Property for Sale">
+                    Property for Sale
+                </option>
+
+            </optgroup>
+
+
+            <optgroup label="Jobs">
+
+                <option value="Restaurant Jobs">
+                    Restaurant Jobs
+                </option>
+
+                <option value="IT Jobs">
+                    IT Jobs
+                </option>
+
+                <option value="Shop Jobs">
+                    Shop Jobs
+                </option>
+
+                <option value="Delivery Jobs">
+                    Delivery Jobs
+                </option>
+
+                <option value="Other Jobs">
+                    Other Jobs
+                </option>
+
+            </optgroup>
+
+        </select>
+
+
+        <!-- IMAGE SECTION -->
+
+        <div class="image-upload-box">
+
+            <label class="image-label">
+                📷 Add Photos
+            </label>
+
+            <div class="image-buttons">
+
+                <label class="image-button">
+
+                    📷 Camera
+
+                    <input
+                        id="camera-input"
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        hidden
+                    >
+
+                </label>
+
+
+                <label class="image-button">
+
+                    🖼️ Gallery
+
+                    <input
+                        id="gallery-input"
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        hidden
+                    >
+
+                </label>
+
+            </div>
+
 
             <input
-                id="sell-image"
+                id="post-image"
+                class="image-url"
                 type="url"
-                placeholder="Image URL (optional)"
+                placeholder="Or paste image URL"
             >
 
-            <button
-                type="submit"
-                class="publish-button"
-            >
-                Publish Listing
-            </button>
 
-            <button
-                type="button"
-                id="cancel-sell"
-                class="cancel-button"
-            >
-                Cancel
-            </button>
+            <div
+                id="image-preview"
+                class="image-preview"
+            ></div>
 
-            <div id="sell-message"></div>
-
-        </form>
-
-    </section>
-
-
-    <!-- CATEGORIES -->
-
-    <h2 class="section-title">
-        Categories
-    </h2>
-
-    <div class="categories">
-
-        <div class="category">
-            <div class="category-icon">📱</div>
-            <p>Mobiles</p>
         </div>
 
-        <div class="category">
-            <div class="category-icon">💻</div>
-            <p>Electronics</p>
+
+        <button
+            type="submit"
+            class="publish-button"
+        >
+            Publish Post
+        </button>
+
+
+        <button
+            type="button"
+            id="cancel-post"
+            class="cancel-button"
+        >
+            Cancel
+        </button>
+
+
+        <div id="post-message"></div>
+
+    </form>
+
+</section>
+
+
+<!-- SERVICES -->
+
+<h2 class="section-title">
+    What are you looking for?
+</h2>
+
+
+<div class="services">
+
+
+    <div
+        class="service-card"
+        data-filter="Marketplace"
+    >
+
+        <div class="service-icon">
+            🛒
         </div>
 
-        <div class="category">
-            <div class="category-icon">🚗</div>
-            <p>Vehicles</p>
-        </div>
+        <h3>
+            Buy & Sell
+        </h3>
 
-        <div class="category">
-            <div class="category-icon">🏠</div>
-            <p>Property</p>
-        </div>
-
-        <div class="category">
-            <div class="category-icon">👕</div>
-            <p>Fashion</p>
-        </div>
-
-        <div class="category">
-            <div class="category-icon">🪑</div>
-            <p>Furniture</p>
-        </div>
-
-        <div class="category">
-            <div class="category-icon">📚</div>
-            <p>Books</p>
-        </div>
-
-        <div class="category">
-            <div class="category-icon">⚽</div>
-            <p>Sports</p>
-        </div>
+        <p>
+            Find products and sell things
+            around you.
+        </p>
 
     </div>
 
 
-    <br><br>
+    <div
+        class="service-card"
+        data-filter="Housing"
+    >
+
+        <div class="service-icon">
+            🏠
+        </div>
+
+        <h3>
+            Rooms & Housing
+        </h3>
+
+        <p>
+            Find rooms, apartments and houses
+            for rent.
+        </p>
+
+    </div>
 
 
-    <!-- LISTINGS -->
+    <div
+        class="service-card"
+        data-filter="Jobs"
+    >
+
+        <div class="service-icon">
+            💼
+        </div>
+
+        <h3>
+            Find Jobs
+        </h3>
+
+        <p>
+            Discover local jobs and employment
+            opportunities.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- CATEGORIES -->
+
+<h2 class="section-title">
+    Categories
+</h2>
+
+
+<div class="categories">
+
+
+    <div
+        class="category active"
+        data-category="All"
+    >
+
+        <div class="category-icon">
+            🏠
+        </div>
+
+        <p>
+            All
+        </p>
+
+    </div>
+
+
+    <div
+        class="category"
+        data-category="Room for Rent"
+    >
+
+        <div class="category-icon">
+            🛏️
+        </div>
+
+        <p>
+            Rooms
+        </p>
+
+    </div>
+
+
+    <div
+        class="category"
+        data-category="Apartment for Rent"
+    >
+
+        <div class="category-icon">
+            🏢
+        </div>
+
+        <p>
+            Apartments
+        </p>
+
+    </div>
+
+
+    <div
+        class="category"
+        data-category="House for Rent"
+    >
+
+        <div class="category-icon">
+            🏡
+        </div>
+
+        <p>
+            Houses
+        </p>
+
+    </div>
+
+
+    <div
+        class="category"
+        data-category="Jobs"
+    >
+
+        <div class="category-icon">
+            💼
+        </div>
+
+        <p>
+            Jobs
+        </p>
+
+    </div>
+
+
+    <div
+        class="category"
+        data-category="Mobiles"
+    >
+
+        <div class="category-icon">
+            📱
+        </div>
+
+        <p>
+            Mobiles
+        </p>
+
+    </div>
+
+
+    <div
+        class="category"
+        data-category="Electronics"
+    >
+
+        <div class="category-icon">
+            💻
+        </div>
+
+        <p>
+            Electronics
+        </p>
+
+    </div>
+
+
+    <div
+        class="category"
+        data-category="Vehicles"
+    >
+
+        <div class="category-icon">
+            🚗
+        </div>
+
+        <p>
+            Vehicles
+        </p>
+
+    </div>
+
+
+    <div
+        class="category"
+        data-category="Furniture"
+    >
+
+        <div class="category-icon">
+            🪑
+        </div>
+
+        <p>
+            Furniture
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- LISTINGS -->
+
+<div class="listings-header">
 
     <h2 class="section-title">
-        Nearby Listings
+        Nearby
     </h2>
 
-    <div class="products" id="products">
+    <div
+        id="filter-text"
+        class="filter-text"
+    >
+        All listings
     </div>
+
+</div>
+
+
+<div
+    id="products"
+    class="products"
+>
+</div>
+
 
 </main>
 
@@ -561,16 +1154,17 @@
         ENY24
     </h2>
 
-    <br>
-
     <p>
-        Nepal's local marketplace.
+        Everything Nearby.
     </p>
 
-    <br>
+    <p>
+        Nepal's local marketplace for
+        products, homes and jobs.
+    </p>
 
     <p>
-        © 2026 ENY24. All rights reserved.
+        © 2026 ENY24
     </p>
 
 </footer>
@@ -580,23 +1174,19 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
 <script>
 
-/*
-    PUT YOUR OWN SUPABASE VALUES HERE.
-
-    Use:
-    1. Supabase Project URL
-    2. Supabase Publishable key
-
-    DO NOT USE THE SECRET/SERVICE-ROLE KEY.
-*/
+/* =========================
+   SUPABASE
+========================= */
 
 const SUPABASE_URL =
     "https://igaayejtemspetgqubtr.supabase.co";
 
+
 const SUPABASE_KEY =
-    "sb_publishable_dqZCsAexYmUEsyDm_uOGxQ_W8DZGWCo";
+    "sb_publishable_dqZCsAexYmUEsyDm_uOGxQ_W8DZGWCo  ";
 
 
 const supabaseClient =
@@ -607,19 +1197,40 @@ const supabaseClient =
 
 
 /* =========================
+   VARIABLES
+========================= */
+
+let allListings = [];
+
+let selectedCategory = "All";
+
+let selectedType = "All";
+
+let searchText = "";
+
+let selectedImages = [];
+
+
+/* =========================
    LOAD LISTINGS
 ========================= */
 
 async function loadListings() {
 
     const products =
-        document.getElementById("products");
+        document.getElementById(
+            "products"
+        );
+
 
     products.innerHTML =
         "<p>Loading listings...</p>";
 
 
-    const { data, error } =
+    const {
+        data,
+        error
+    } =
         await supabaseClient
         .from("listings")
         .select("*")
@@ -635,6 +1246,7 @@ async function loadListings() {
             error
         );
 
+
         products.innerHTML =
             "<p>Unable to load listings.</p>";
 
@@ -642,246 +1254,801 @@ async function loadListings() {
     }
 
 
-    products.innerHTML = "";
+    allListings =
+        data || [];
 
 
-    if (!data || data.length === 0) {
-
-        products.innerHTML =
-            "<p>No listings yet.</p>";
-
-        return;
-    }
-
-
-    data.forEach(product => {
-
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "product";
-
-
-        let imageHTML =
-            "📦";
-
-
-        if (product.image_url) {
-
-            imageHTML = `
-                <img
-                    src="${product.image_url}"
-                    alt="${product.title}"
-                >
-            `;
-        }
-
-
-        card.innerHTML = `
-
-            <div class="product-image">
-                ${imageHTML}
-            </div>
-
-            <div class="product-info">
-
-                <div class="product-name">
-                    ${product.title}
-                </div>
-
-                <div class="price">
-                    Rs. ${Number(product.price).toLocaleString()}
-                </div>
-
-                <div class="place">
-                    📍 ${product.location}
-                </div>
-
-                <div class="category-label">
-                    ${product.category}
-                </div>
-
-            </div>
-
-        `;
-
-
-        products.appendChild(card);
-
-    });
+    displayListings();
 
 }
 
 
 /* =========================
-   OPEN SELL FORM
+   DISPLAY LISTINGS
 ========================= */
 
-document
-.getElementById("open-sell")
-.addEventListener("click", function() {
+function displayListings() {
 
-    const sellSection =
+    const products =
         document.getElementById(
-            "sell-section"
+            "products"
         );
 
 
-    sellSection.style.display =
-        "block";
+    products.innerHTML = "";
 
 
-    sellSection.scrollIntoView({
-        behavior: "smooth"
-    });
+    const filtered =
+        allListings.filter(
+            listing => {
 
-});
-
-
-/* =========================
-   CANCEL SELL FORM
-========================= */
-
-document
-.getElementById("cancel-sell")
-.addEventListener("click", function() {
-
-    document.getElementById(
-        "sell-section"
-    ).style.display = "none";
+                const title =
+                    String(
+                        listing.title || ""
+                    ).toLowerCase();
 
 
-    document.getElementById(
-        "sell-form"
-    ).reset();
+                const description =
+                    String(
+                        listing.description || ""
+                    ).toLowerCase();
 
 
-    document.getElementById(
-        "sell-message"
-    ).textContent = "";
-
-});
-
-
-/* =========================
-   PUBLISH LISTING
-========================= */
-
-document
-.getElementById("sell-form")
-.addEventListener("submit", async function(event) {
-
-    event.preventDefault();
+                const location =
+                    String(
+                        listing.location || ""
+                    ).toLowerCase();
 
 
-    const message =
-        document.getElementById(
-            "sell-message"
+                const category =
+                    String(
+                        listing.category || ""
+                    ).toLowerCase();
+
+
+                const type =
+                    String(
+                        listing.listing_type || ""
+                    ).toLowerCase();
+
+
+                const matchesSearch =
+                    !searchText ||
+                    title.includes(
+                        searchText
+                    ) ||
+                    description.includes(
+                        searchText
+                    ) ||
+                    location.includes(
+                        searchText
+                    ) ||
+                    category.includes(
+                        searchText
+                    );
+
+
+                const matchesCategory =
+                    selectedCategory === "All" ||
+                    category ===
+                    selectedCategory
+                    .toLowerCase();
+
+
+                const matchesType =
+                    selectedType === "All" ||
+                    type ===
+                    selectedType
+                    .toLowerCase();
+
+
+                return (
+                    matchesSearch &&
+                    matchesCategory &&
+                    matchesType
+                );
+
+            }
         );
 
 
-    message.textContent =
-        "Publishing...";
+    if (
+        filtered.length === 0
+    ) {
 
+        products.innerHTML = `
 
-    const title =
-        document.getElementById(
-            "sell-title"
-        ).value.trim();
+            <div style="
+                background:white;
+                padding:30px;
+                border-radius:15px;
+                grid-column:1/-1;
+                text-align:center;
+                color:#777;
+            ">
 
+                No listings found.
 
-    const description =
-        document.getElementById(
-            "sell-description"
-        ).value.trim();
+            </div>
 
-
-    const price =
-        Number(
-            document.getElementById(
-                "sell-price"
-            ).value
-        );
-
-
-    const location =
-        document.getElementById(
-            "sell-location"
-        ).value.trim();
-
-
-    const category =
-        document.getElementById(
-            "sell-category"
-        ).value;
-
-
-    const image_url =
-        document.getElementById(
-            "sell-image"
-        ).value.trim();
-
-
-    const { error } =
-        await supabaseClient
-        .from("listings")
-        .insert({
-
-            title: title,
-
-            description: description,
-
-            price: price,
-
-            location: location,
-
-            category: category,
-
-            image_url: image_url
-
-        });
-
-
-    if (error) {
-
-        console.error(
-            "Publish error:",
-            error
-        );
-
-
-        message.textContent =
-            "Could not publish listing. Please check the database permissions.";
-
+        `;
 
         return;
     }
 
 
-    message.textContent =
-        "Listing published successfully!";
+    filtered.forEach(
+        listing => {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
 
 
-    document
-    .getElementById("sell-form")
-    .reset();
+            card.className =
+                "product";
 
 
-    await loadListings();
+            let imageHTML =
+                "📦";
 
 
-    setTimeout(function() {
+            if (
+                listing.image_url &&
+                listing.image_url.trim() !== ""
+            ) {
 
+                imageHTML = `
+
+                    <img
+                        src="${escapeHTML(
+                            listing.image_url
+                        )}"
+                        alt="${escapeHTML(
+                            listing.title
+                        )}"
+                    >
+
+                `;
+
+            }
+
+
+            let icon = "📦";
+
+
+            if (
+                listing.category ===
+                "Room for Rent"
+            ) {
+
+                icon = "🛏️";
+
+            } else if (
+                listing.category ===
+                "Apartment for Rent"
+            ) {
+
+                icon = "🏢";
+
+            } else if (
+                listing.category ===
+                "House for Rent"
+            ) {
+
+                icon = "🏡";
+
+            } else if (
+                listing.listing_type ===
+                "Jobs"
+            ) {
+
+                icon = "💼";
+
+            }
+
+
+            if (
+                imageHTML === "📦"
+            ) {
+
+                imageHTML =
+                    icon;
+
+            }
+
+
+            card.innerHTML = `
+
+                <div class="product-image">
+                    ${imageHTML}
+                </div>
+
+                <div class="product-info">
+
+                    <div class="product-name">
+                        ${escapeHTML(
+                            listing.title
+                        )}
+                    </div>
+
+                    <div class="price">
+                        NPR ${Number(
+                            listing.price || 0
+                        ).toLocaleString()}
+                    </div>
+
+                    <div class="place">
+                        📍 ${escapeHTML(
+                            listing.location
+                        )}
+                    </div>
+
+                    <div class="category-label">
+                        ${escapeHTML(
+                            listing.category
+                        )}
+                    </div>
+
+                </div>
+
+            `;
+
+
+            products.appendChild(
+                card
+            );
+
+        }
+    );
+
+
+    updateFilterText();
+
+}
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHTML(
+    value
+) {
+
+    return String(
+        value || ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+/* =========================
+   FILTER TEXT
+========================= */
+
+function updateFilterText() {
+
+    const filterText =
         document.getElementById(
-            "sell-section"
-        ).style.display = "none";
+            "filter-text"
+        );
 
-        message.textContent = "";
 
-    }, 1500);
+    if (
+        selectedCategory !==
+        "All"
+    ) {
 
-});
+        filterText.textContent =
+            selectedCategory;
+
+    } else if (
+        selectedType !==
+        "All"
+    ) {
+
+        filterText.textContent =
+            selectedType;
+
+    } else {
+
+        filterText.textContent =
+            "All listings";
+
+    }
+
+}
+
+
+/* =========================
+   OPEN POST
+========================= */
+
+function openPostForm() {
+
+    const section =
+        document.getElementById(
+            "post-section"
+        );
+
+
+    section.style.display =
+        "block";
+
+
+    section.scrollIntoView({
+        behavior:
+            "smooth"
+    });
+
+}
+
+
+document
+.getElementById("open-post")
+.addEventListener(
+    "click",
+    openPostForm
+);
+
+
+document
+.getElementById("hero-post")
+.addEventListener(
+    "click",
+    openPostForm
+);
+
+
+/* =========================
+   CANCEL POST
+========================= */
+
+document
+.getElementById("cancel-post")
+.addEventListener(
+    "click",
+    function() {
+
+        document
+        .getElementById(
+            "post-section"
+        )
+        .style.display =
+            "none";
+
+
+        document
+        .getElementById(
+            "post-form"
+        )
+        .reset();
+
+
+        selectedImages = [];
+
+
+        showImagePreview();
+
+
+        document
+        .getElementById(
+            "post-message"
+        )
+        .textContent = "";
+
+    }
+);
+
+
+/* =========================
+   IMAGE SELECTION
+========================= */
+
+const cameraInput =
+    document.getElementById(
+        "camera-input"
+    );
+
+
+const galleryInput =
+    document.getElementById(
+        "gallery-input"
+    );
+
+
+function handleImages(
+    files
+) {
+
+    Array.from(
+        files
+    ).forEach(
+        file => {
+
+            if (
+                !file.type
+                .startsWith(
+                    "image/"
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            selectedImages.push(
+                file
+            );
+
+        }
+    );
+
+
+    showImagePreview();
+
+}
+
+
+cameraInput
+.addEventListener(
+    "change",
+    function() {
+
+        handleImages(
+            this.files
+        );
+
+        this.value = "";
+
+    }
+);
+
+
+galleryInput
+.addEventListener(
+    "change",
+    function() {
+
+        handleImages(
+            this.files
+        );
+
+        this.value = "";
+
+    }
+);
+
+
+/* =========================
+   IMAGE PREVIEW
+========================= */
+
+function showImagePreview() {
+
+    const preview =
+        document.getElementById(
+            "image-preview"
+        );
+
+
+    preview.innerHTML = "";
+
+
+    selectedImages.forEach(
+        (
+            file,
+            index
+        ) => {
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function(event) {
+
+                    const item =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    item.className =
+                        "preview-item";
+
+
+                    item.innerHTML = `
+
+                        <img
+                            src="${event.target.result}"
+                            alt="Selected image"
+                        >
+
+                        <button
+                            type="button"
+                            class="remove-image"
+                            onclick="removeImage(${index})"
+                        >
+                            ×
+                        </button>
+
+                    `;
+
+
+                    preview.appendChild(
+                        item
+                    );
+
+                };
+
+
+            reader.readAsDataURL(
+                file
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================
+   REMOVE IMAGE
+========================= */
+
+function removeImage(
+    index
+) {
+
+    selectedImages.splice(
+        index,
+        1
+    );
+
+
+    showImagePreview();
+
+}
+
+
+/* =========================
+   PASTE IMAGE URL
+========================= */
+
+document
+.getElementById(
+    "post-image"
+)
+.addEventListener(
+    "input",
+    function() {
+
+        const url =
+            this.value.trim();
+
+
+        if (!url) {
+
+            return;
+
+        }
+
+
+        const preview =
+            document.getElementById(
+                "image-preview"
+            );
+
+
+        preview.innerHTML = `
+
+            <div class="preview-item">
+
+                <img
+                    src="${escapeHTML(url)}"
+                    alt="Image preview"
+                    onerror="this.style.display='none'"
+                >
+
+            </div>
+
+        `;
+
+    }
+);
+
+
+/* =========================
+   PUBLISH POST
+========================= */
+
+document
+.getElementById("post-form")
+.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const message =
+            document.getElementById(
+                "post-message"
+            );
+
+
+        message.textContent =
+            "Publishing...";
+
+
+        const listingType =
+            document.getElementById(
+                "listing-type"
+            ).value;
+
+
+        const title =
+            document.getElementById(
+                "post-title"
+            ).value.trim();
+
+
+        const description =
+            document.getElementById(
+                "post-description"
+            ).value.trim();
+
+
+        const price =
+            Number(
+                document.getElementById(
+                    "post-price"
+                ).value
+            );
+
+
+        const location =
+            document.getElementById(
+                "post-location"
+            ).value.trim();
+
+
+        const category =
+            document.getElementById(
+                "post-category"
+            ).value;
+
+
+        const imageURL =
+            document.getElementById(
+                "post-image"
+            ).value.trim();
+
+
+        /*
+        For this first version:
+
+        - pasted image URL is saved
+        - selected camera/gallery files
+          are previewed locally
+
+        Permanent photo storage will be
+        connected through Supabase Storage
+        in the next step.
+        */
+
+
+        const {
+            error
+        } =
+            await supabaseClient
+            .from("listings")
+            .insert({
+
+                listing_type:
+                    listingType,
+
+                title:
+                    title,
+
+                description:
+                    description,
+
+                price:
+                    price,
+
+                location:
+                    location,
+
+                category:
+                    category,
+
+                image_url:
+                    imageURL
+
+            });
+
+
+        if (error) {
+
+            console.error(
+                "Publish error:",
+                error
+            );
+
+
+            message.textContent =
+                "Could not publish. Check database permissions.";
+
+            return;
+
+        }
+
+
+        message.textContent =
+            "Published successfully!";
+
+
+        document
+        .getElementById(
+            "post-form"
+        )
+        .reset();
+
+
+        selectedImages = [];
+
+
+        showImagePreview();
+
+
+        await loadListings();
+
+
+        setTimeout(
+            function() {
+
+                document
+                .getElementById(
+                    "post-section"
+                )
+                .style.display =
+                    "none";
+
+
+                message.textContent =
+                    "";
+
+            },
+            1200
+        );
+
+    }
+);
 
 
 /* =========================
@@ -889,87 +2056,168 @@ document
 ========================= */
 
 document
-.getElementById("search-input")
-.addEventListener("input", function() {
+.getElementById(
+    "search-input"
+)
+.addEventListener(
+    "input",
+    function() {
 
-    const search =
-        this.value
-        .toLowerCase()
-        .trim();
-
-
-    document
-    .querySelectorAll(".product")
-    .forEach(product => {
-
-        const text =
-            product.textContent
-            .toLowerCase();
+        searchText =
+            this.value
+            .toLowerCase()
+            .trim();
 
 
-        product.style.display =
-            text.includes(search)
-            ? ""
-            : "none";
+        displayListings();
 
-    });
-
-});
+    }
+);
 
 
 /* =========================
-   CATEGORY SEARCH
+   CATEGORY FILTER
 ========================= */
 
 document
-.querySelectorAll(".category")
-.forEach(category => {
+.querySelectorAll(
+    ".category"
+)
+.forEach(
+    category => {
 
-    category.addEventListener(
-        "click",
-        function() {
+        category.addEventListener(
+            "click",
+            function() {
 
-            const categoryName =
-                this.querySelector(
-                    "p"
-                ).textContent;
+                document
+                .querySelectorAll(
+                    ".category"
+                )
+                .forEach(
+                    item => {
 
+                        item.classList
+                        .remove(
+                            "active"
+                        );
 
-            const searchInput =
-                document.getElementById(
-                    "search-input"
+                    }
                 );
 
 
-            searchInput.value =
-                categoryName;
+                this.classList.add(
+                    "active"
+                );
 
 
-            searchInput.dispatchEvent(
-                new Event("input")
-            );
+                selectedCategory =
+                    this.dataset.category;
 
-        }
-    );
 
-});
+                selectedType =
+                    "All";
+
+
+                displayListings();
+
+            }
+        );
+
+    }
+);
 
 
 /* =========================
-   EXPLORE BUTTON
+   SERVICE FILTER
 ========================= */
 
 document
-.getElementById("explore-button")
-.addEventListener("click", function() {
+.querySelectorAll(
+    ".service-card"
+)
+.forEach(
+    service => {
 
-    document
-    .querySelector(".section-title")
-    .scrollIntoView({
-        behavior: "smooth"
-    });
+        service.addEventListener(
+            "click",
+            function() {
 
-});
+                selectedType =
+                    this.dataset.filter;
+
+
+                selectedCategory =
+                    "All";
+
+
+                document
+                .querySelectorAll(
+                    ".category"
+                )
+                .forEach(
+                    item => {
+
+                        item.classList
+                        .remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                document
+                .querySelector(
+                    '.category[data-category="All"]'
+                )
+                .classList.add(
+                    "active"
+                );
+
+
+                displayListings();
+
+
+                document
+                .querySelector(
+                    ".listings-header"
+                )
+                .scrollIntoView({
+                    behavior:
+                        "smooth"
+                });
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================
+   EXPLORE
+========================= */
+
+document
+.getElementById(
+    "explore-button"
+)
+.addEventListener(
+    "click",
+    function() {
+
+        document
+        .querySelector(
+            ".services"
+        )
+        .scrollIntoView({
+            behavior:
+                "smooth"
+        });
+
+    }
+);
 
 
 /* =========================
@@ -981,4 +2229,5 @@ loadListings();
 </script>
 
 </body>
+
 </html>
