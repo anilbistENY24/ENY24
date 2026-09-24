@@ -485,6 +485,49 @@
         </p>
 
     </footer>
+<script>
+    const searchInput = document.querySelector(".search input");
+    const products = document.querySelectorAll(".product");
+    const categories = document.querySelectorAll(".category");
 
+    // Search products
+    searchInput.addEventListener("input", function () {
+        const searchText = this.value.toLowerCase();
+
+        products.forEach(product => {
+            const productName =
+                product.querySelector(".product-name").textContent.toLowerCase();
+
+            const location =
+                product.querySelector(".place").textContent.toLowerCase();
+
+            if (
+                productName.includes(searchText) ||
+                location.includes(searchText)
+            ) {
+                product.style.display = "";
+            } else {
+                product.style.display = "none";
+            }
+        });
+    });
+
+    // Category click
+    categories.forEach(category => {
+        category.addEventListener("click", function () {
+            const categoryName =
+                this.querySelector("p").textContent;
+
+            searchInput.value = categoryName;
+
+            searchInput.dispatchEvent(new Event("input"));
+        });
+    });
+
+    // Sell button
+    document.querySelector(".sell-button").addEventListener("click", function () {
+        alert("Selling feature coming soon!");
+    });
+</script>
 </body>
 </html>
