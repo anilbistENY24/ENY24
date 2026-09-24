@@ -1,14 +1,490 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>ENY24</title>
-</head>
-<body>
-    <h1>ENY24</h1>
-    <h2>Nepal's Local Marketplace</h2>
-    <p>Buy. Sell. Connect with people near you.</p>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <button>Browse Products</button>
-    <button>Sell an Item</button>
+    <title>ENY24 - Nepal Local Marketplace</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            color: #222;
+        }
+
+        /* HEADER */
+        header {
+            background: white;
+            border-bottom: 1px solid #ddd;
+            padding: 15px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff6f00;
+        }
+
+        .location {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .search {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 12px 18px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .sell-button {
+            background: #ff6f00;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 22px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* HERO */
+        .hero {
+            padding: 55px 6%;
+            background: linear-gradient(135deg, #fff4e8, #ffffff);
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 12px;
+        }
+
+        .hero h1 span {
+            color: #ff6f00;
+        }
+
+        .hero p {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 25px;
+        }
+
+        .hero button {
+            background: #ff6f00;
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* MAIN */
+        main {
+            padding: 35px 6%;
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* CATEGORIES */
+        .categories {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+        }
+
+        .category {
+            min-width: 110px;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 15px;
+            padding: 18px 10px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .category:hover {
+            border-color: #ff6f00;
+        }
+
+        .category-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .category p {
+            font-size: 14px;
+        }
+
+        /* PRODUCTS */
+        .products {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .product {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid #eee;
+            transition: 0.2s;
+        }
+
+        .product:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .product-image {
+            height: 190px;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 55px;
+        }
+
+        .product-info {
+            padding: 15px;
+        }
+
+        .product-name {
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff6f00;
+            margin-bottom: 7px;
+        }
+
+        .place {
+            color: #777;
+            font-size: 13px;
+        }
+
+        /* FOOTER */
+        footer {
+            margin-top: 50px;
+            background: #222;
+            color: white;
+            padding: 35px 6%;
+            text-align: center;
+        }
+
+        footer h2 {
+            margin-bottom: 10px;
+        }
+
+        footer p {
+            color: #bbb;
+            font-size: 14px;
+        }
+
+        /* MOBILE */
+        @media (max-width: 900px) {
+            .products {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            header {
+                flex-wrap: wrap;
+            }
+
+            .search {
+                order: 3;
+                max-width: 100%;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 550px) {
+            header {
+                padding: 12px 5%;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .hero {
+                padding: 40px 5%;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            main {
+                padding: 30px 5%;
+            }
+
+            .products {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+
+            .product-image {
+                height: 140px;
+                font-size: 40px;
+            }
+
+            .product-info {
+                padding: 11px;
+            }
+
+            .sell-button {
+                padding: 9px 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+
+        <div class="logo">ENY24</div>
+
+        <div class="location">
+            📍 Kathmandu, Nepal
+        </div>
+
+        <div class="search">
+            <input
+                type="text"
+                placeholder="Search products near you..."
+            >
+        </div>
+
+        <button class="sell-button">
+            + Sell
+        </button>
+
+    </header>
+
+
+    <!-- HERO -->
+    <section class="hero">
+
+        <h1>
+            Buy & Sell <span>Nearby</span>
+        </h1>
+
+        <p>
+            Nepal's local marketplace for buying, selling and connecting
+            with people around you.
+        </p>
+
+        <button>
+            Explore Marketplace
+        </button>
+
+    </section>
+
+
+    <!-- MAIN -->
+    <main>
+
+        <!-- CATEGORIES -->
+        <h2 class="section-title">
+            Categories
+        </h2>
+
+        <div class="categories">
+
+            <div class="category">
+                <div class="category-icon">📱</div>
+                <p>Mobiles</p>
+            </div>
+
+            <div class="category">
+                <div class="category-icon">💻</div>
+                <p>Electronics</p>
+            </div>
+
+            <div class="category">
+                <div class="category-icon">🚗</div>
+                <p>Vehicles</p>
+            </div>
+
+            <div class="category">
+                <div class="category-icon">🏠</div>
+                <p>Property</p>
+            </div>
+
+            <div class="category">
+                <div class="category-icon">👕</div>
+                <p>Fashion</p>
+            </div>
+
+            <div class="category">
+                <div class="category-icon">🪑</div>
+                <p>Furniture</p>
+            </div>
+
+            <div class="category">
+                <div class="category-icon">📚</div>
+                <p>Books</p>
+            </div>
+
+            <div class="category">
+                <div class="category-icon">⚽</div>
+                <p>Sports</p>
+            </div>
+
+        </div>
+
+
+        <!-- PRODUCTS -->
+        <br><br>
+
+        <h2 class="section-title">
+            Nearby Listings
+        </h2>
+
+        <div class="products">
+
+            <div class="product">
+
+                <div class="product-image">
+                    📱
+                </div>
+
+                <div class="product-info">
+                    <div class="product-name">
+                        iPhone 15 Pro
+                    </div>
+
+                    <div class="price">
+                        Rs. 95,000
+                    </div>
+
+                    <div class="place">
+                        📍 Kathmandu
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="product">
+
+                <div class="product-image">
+                    💻
+                </div>
+
+                <div class="product-info">
+                    <div class="product-name">
+                        Gaming Laptop
+                    </div>
+
+                    <div class="price">
+                        Rs. 85,000
+                    </div>
+
+                    <div class="place">
+                        📍 Lalitpur
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="product">
+
+                <div class="product-image">
+                    🚲
+                </div>
+
+                <div class="product-info">
+                    <div class="product-name">
+                        Mountain Bike
+                    </div>
+
+                    <div class="price">
+                        Rs. 25,000
+                    </div>
+
+                    <div class="place">
+                        📍 Bhaktapur
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="product">
+
+                <div class="product-image">
+                    🪑
+                </div>
+
+                <div class="product-info">
+                    <div class="product-name">
+                        Wooden Table
+                    </div>
+
+                    <div class="price">
+                        Rs. 8,500
+                    </div>
+
+                    <div class="place">
+                        📍 Kathmandu
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <h2>ENY24</h2>
+
+        <p>
+            Nepal's local marketplace.
+        </p>
+
+        <br>
+
+        <p>
+            © 2026 ENY24. All rights reserved.
+        </p>
+
+    </footer>
+
 </body>
 </html>
