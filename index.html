@@ -58,14 +58,18 @@
             outline: none;
         }
 
-        .sell-button {
-            background: #ff6f00;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 22px;
-            font-weight: bold;
-            cursor: pointer;
+       const sellSection = document.getElementById("sell-section");
+const sellButton = document.querySelector(".sell-button");
+const cancelSell = document.getElementById("cancel-sell");
+
+sellButton.addEventListener("click", function () {
+    sellSection.style.display = "block";
+    sellSection.scrollIntoView({ behavior: "smooth" });
+});
+
+cancelSell.addEventListener("click", function () {
+    sellSection.style.display = "none";
+});
         }
 
         /* HERO */
@@ -100,7 +104,83 @@
         }
 
         /* MAIN */
-        main {
+        main <section id="sell-section" style="
+    display:none;
+    background:white;
+    padding:25px;
+    margin-bottom:30px;
+    border-radius:15px;
+    border:1px solid #eee;
+">
+
+    <h2 style="margin-bottom:20px;">Sell an Item</h2>
+
+    <form id="sell-form">
+
+        <input
+            id="sell-title"
+            type="text"
+            placeholder="Product name"
+            required
+            style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #ddd;border-radius:8px;"
+        >
+
+        <textarea
+            id="sell-description"
+            placeholder="Describe your item"
+            rows="4"
+            style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #ddd;border-radius:8px;"
+        ></textarea>
+
+        <input
+            id="sell-price"
+            type="number"
+            placeholder="Price in NPR"
+            required
+            style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #ddd;border-radius:8px;"
+        >
+
+        <input
+            id="sell-location"
+            type="text"
+            placeholder="Location (e.g. Kathmandu)"
+            required
+            style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #ddd;border-radius:8px;"
+        >
+
+        <select
+            id="sell-category"
+            required
+            style="width:100%;padding:12px;margin-bottom:15px;border:1px solid #ddd;border-radius:8px;"
+        >
+            <option value="">Select category</option>
+            <option>Mobiles</option>
+            <option>Electronics</option>
+            <option>Vehicles</option>
+            <option>Property</option>
+            <option>Fashion</option>
+            <option>Furniture</option>
+            <option>Books</option>
+            <option>Sports</option>
+        </select>
+
+        <button
+            type="submit"
+            style="background:#ff6f00;color:white;border:none;padding:13px 25px;border-radius:22px;font-weight:bold;cursor:pointer;"
+        >
+            Publish Listing
+        </button>
+
+        <button
+            type="button"
+            id="cancel-sell"
+            style="margin-left:10px;padding:13px 20px;border:1px solid #ddd;background:white;border-radius:22px;cursor:pointer;"
+        >
+            Cancel
+        </button>
+
+    </form>
+</section>{
             padding: 35px 6%;
         }
 
