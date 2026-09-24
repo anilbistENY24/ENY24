@@ -66,6 +66,10 @@
             cursor: pointer;
         }
 
+        .sell-button:hover {
+            opacity: 0.9;
+        }
+
         .hero {
             padding: 55px 6%;
             background: linear-gradient(135deg, #fff4e8, #ffffff);
@@ -100,21 +104,27 @@
             padding: 35px 6%;
         }
 
+        /* SELL FORM */
+
         #sell-section {
             display: none;
             background: white;
             padding: 25px;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
             border-radius: 15px;
             border: 1px solid #eee;
+        }
+
+        #sell-section h2 {
+            margin-bottom: 20px;
         }
 
         #sell-section input,
         #sell-section textarea,
         #sell-section select {
             width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
+            padding: 13px;
+            margin-bottom: 13px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 15px;
@@ -142,6 +152,13 @@
             border-radius: 22px;
             cursor: pointer;
         }
+
+        #sell-message {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        /* CATEGORIES */
 
         .section-title {
             font-size: 24px;
@@ -178,6 +195,8 @@
             font-size: 14px;
         }
 
+        /* PRODUCTS */
+
         .products {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -198,6 +217,12 @@
             align-items: center;
             justify-content: center;
             font-size: 55px;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .product-info {
@@ -221,6 +246,14 @@
             font-size: 13px;
         }
 
+        .category-label {
+            margin-top: 8px;
+            color: #777;
+            font-size: 13px;
+        }
+
+        /* FOOTER */
+
         footer {
             margin-top: 50px;
             background: #222;
@@ -234,7 +267,10 @@
             font-size: 14px;
         }
 
+        /* MOBILE */
+
         @media (max-width: 900px) {
+
             .products {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -251,6 +287,7 @@
         }
 
         @media (max-width: 550px) {
+
             header {
                 padding: 12px 5%;
             }
@@ -285,9 +322,13 @@
 
 <body>
 
+<!-- HEADER -->
+
 <header>
 
-    <div class="logo">ENY24</div>
+    <div class="logo">
+        ENY24
+    </div>
 
     <div class="location">
         📍 Kathmandu, Nepal
@@ -296,15 +337,23 @@
     <div class="search">
         <input
             type="text"
+            id="search-input"
             placeholder="Search products near you..."
         >
     </div>
 
-    <button class="sell-button">
+    <button
+        class="sell-button"
+        id="open-sell"
+        type="button"
+    >
         + Sell
     </button>
 
 </header>
+
+
+<!-- HERO -->
 
 <section class="hero">
 
@@ -317,11 +366,15 @@
         with people around you.
     </p>
 
-    <button>
+    <button
+        type="button"
+        id="explore-button"
+    >
         Explore Marketplace
     </button>
 
 </section>
+
 
 <main>
 
@@ -329,7 +382,7 @@
 
     <section id="sell-section">
 
-        <h2 style="margin-bottom:20px;">
+        <h2>
             Sell an Item
         </h2>
 
@@ -352,6 +405,7 @@
                 id="sell-price"
                 type="number"
                 placeholder="Price in NPR"
+                min="0"
                 required
             >
 
@@ -362,20 +416,46 @@
                 required
             >
 
-            <select id="sell-category" required>
+            <select
+                id="sell-category"
+                required
+            >
 
                 <option value="">
                     Select category
                 </option>
 
-                <option>Mobiles</option>
-                <option>Electronics</option>
-                <option>Vehicles</option>
-                <option>Property</option>
-                <option>Fashion</option>
-                <option>Furniture</option>
-                <option>Books</option>
-                <option>Sports</option>
+                <option value="Mobiles">
+                    Mobiles
+                </option>
+
+                <option value="Electronics">
+                    Electronics
+                </option>
+
+                <option value="Vehicles">
+                    Vehicles
+                </option>
+
+                <option value="Property">
+                    Property
+                </option>
+
+                <option value="Fashion">
+                    Fashion
+                </option>
+
+                <option value="Furniture">
+                    Furniture
+                </option>
+
+                <option value="Books">
+                    Books
+                </option>
+
+                <option value="Sports">
+                    Sports
+                </option>
 
             </select>
 
@@ -399,6 +479,8 @@
             >
                 Cancel
             </button>
+
+            <div id="sell-message"></div>
 
         </form>
 
@@ -455,19 +537,29 @@
 
     </div>
 
+
     <br><br>
+
+
+    <!-- LISTINGS -->
 
     <h2 class="section-title">
         Nearby Listings
     </h2>
 
-    <div class="products"></div>
+    <div class="products" id="products">
+    </div>
 
 </main>
 
+
+<!-- FOOTER -->
+
 <footer>
 
-    <h2>ENY24</h2>
+    <h2>
+        ENY24
+    </h2>
 
     <br>
 
@@ -490,8 +582,22 @@
 
 <script>
 
-const SUPABASE_URL = "https://supabase.com/dashboard/project/igaayejtemspetgqubtr/settings/api-keys";
-const SUPABASE_KEY = "sb_publishable_dqZCsAexYmUEsyDm_uOGxQ_W8DZGWCo";
+/*
+    PUT YOUR OWN SUPABASE VALUES HERE.
+
+    Use:
+    1. Supabase Project URL
+    2. Supabase Publishable key
+
+    DO NOT USE THE SECRET/SERVICE-ROLE KEY.
+*/
+
+const SUPABASE_URL =
+    "https://supabase.com/dashboard/project/igaayejtemspetgqubtr/settings/api-keys";
+
+const SUPABASE_KEY =
+    "sb_publishable_dqZCsAexYmUEsyDm_uOGxQ_W8DZGWCo";
+
 
 const supabaseClient =
     window.supabase.createClient(
@@ -500,50 +606,82 @@ const supabaseClient =
     );
 
 
-/* LOAD LISTINGS */
+/* =========================
+   LOAD LISTINGS
+========================= */
 
 async function loadListings() {
+
+    const products =
+        document.getElementById("products");
+
+    products.innerHTML =
+        "<p>Loading listings...</p>";
+
 
     const { data, error } =
         await supabaseClient
         .from("listings")
         .select("*")
-        .order("id", { ascending: false });
+        .order("id", {
+            ascending: false
+        });
+
 
     if (error) {
 
-        console.error(error);
+        console.error(
+            "Supabase error:",
+            error
+        );
+
+        products.innerHTML =
+            "<p>Unable to load listings.</p>";
 
         return;
     }
 
-    const products =
-        document.querySelector(".products");
 
     products.innerHTML = "";
+
+
+    if (!data || data.length === 0) {
+
+        products.innerHTML =
+            "<p>No listings yet.</p>";
+
+        return;
+    }
+
 
     data.forEach(product => {
 
         const card =
             document.createElement("div");
 
-        card.className = "product";
+        card.className =
+            "product";
+
+
+        let imageHTML =
+            "📦";
+
+
+        if (product.image_url) {
+
+            imageHTML = `
+                <img
+                    src="${product.image_url}"
+                    alt="${product.title}"
+                >
+            `;
+        }
+
 
         card.innerHTML = `
 
             <div class="product-image">
-
-                ${
-                    product.image_url
-                    ?
-                    `<img
-                        src="${product.image_url}"
-                        style="width:100%;height:100%;object-fit:cover;"
-                    >`
-                    :
-                    "📦"
-                }
-
+                ${imageHTML}
             </div>
 
             <div class="product-info">
@@ -560,12 +698,14 @@ async function loadListings() {
                     📍 ${product.location}
                 </div>
 
-                <div style="margin-top:8px;color:#777;font-size:13px;">
+                <div class="category-label">
                     ${product.category}
                 </div>
 
             </div>
+
         `;
+
 
         products.appendChild(card);
 
@@ -574,25 +714,34 @@ async function loadListings() {
 }
 
 
-/* OPEN SELL FORM */
+/* =========================
+   OPEN SELL FORM
+========================= */
 
 document
-.querySelector(".sell-button")
+.getElementById("open-sell")
 .addEventListener("click", function() {
 
-    const form =
-        document.getElementById("sell-section");
+    const sellSection =
+        document.getElementById(
+            "sell-section"
+        );
 
-    form.style.display = "block";
 
-    form.scrollIntoView({
+    sellSection.style.display =
+        "block";
+
+
+    sellSection.scrollIntoView({
         behavior: "smooth"
     });
 
 });
 
 
-/* CLOSE SELL FORM */
+/* =========================
+   CANCEL SELL FORM
+========================= */
 
 document
 .getElementById("cancel-sell")
@@ -602,24 +751,161 @@ document
         "sell-section"
     ).style.display = "none";
 
+
+    document.getElementById(
+        "sell-form"
+    ).reset();
+
+
+    document.getElementById(
+        "sell-message"
+    ).textContent = "";
+
 });
 
 
-/* SEARCH */
+/* =========================
+   PUBLISH LISTING
+========================= */
 
 document
-.querySelector(".search input")
+.getElementById("sell-form")
+.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+
+    const message =
+        document.getElementById(
+            "sell-message"
+        );
+
+
+    message.textContent =
+        "Publishing...";
+
+
+    const title =
+        document.getElementById(
+            "sell-title"
+        ).value.trim();
+
+
+    const description =
+        document.getElementById(
+            "sell-description"
+        ).value.trim();
+
+
+    const price =
+        Number(
+            document.getElementById(
+                "sell-price"
+            ).value
+        );
+
+
+    const location =
+        document.getElementById(
+            "sell-location"
+        ).value.trim();
+
+
+    const category =
+        document.getElementById(
+            "sell-category"
+        ).value;
+
+
+    const image_url =
+        document.getElementById(
+            "sell-image"
+        ).value.trim();
+
+
+    const { error } =
+        await supabaseClient
+        .from("listings")
+        .insert({
+
+            title: title,
+
+            description: description,
+
+            price: price,
+
+            location: location,
+
+            category: category,
+
+            image_url: image_url
+
+        });
+
+
+    if (error) {
+
+        console.error(
+            "Publish error:",
+            error
+        );
+
+
+        message.textContent =
+            "Could not publish listing. Please check the database permissions.";
+
+
+        return;
+    }
+
+
+    message.textContent =
+        "Listing published successfully!";
+
+
+    document
+    .getElementById("sell-form")
+    .reset();
+
+
+    await loadListings();
+
+
+    setTimeout(function() {
+
+        document.getElementById(
+            "sell-section"
+        ).style.display = "none";
+
+        message.textContent = "";
+
+    }, 1500);
+
+});
+
+
+/* =========================
+   SEARCH
+========================= */
+
+document
+.getElementById("search-input")
 .addEventListener("input", function() {
 
     const search =
-        this.value.toLowerCase();
+        this.value
+        .toLowerCase()
+        .trim();
+
 
     document
     .querySelectorAll(".product")
     .forEach(product => {
 
         const text =
-            product.textContent.toLowerCase();
+            product.textContent
+            .toLowerCase();
+
 
         product.style.display =
             text.includes(search)
@@ -631,7 +917,64 @@ document
 });
 
 
-/* LOAD DATABASE */
+/* =========================
+   CATEGORY SEARCH
+========================= */
+
+document
+.querySelectorAll(".category")
+.forEach(category => {
+
+    category.addEventListener(
+        "click",
+        function() {
+
+            const categoryName =
+                this.querySelector(
+                    "p"
+                ).textContent;
+
+
+            const searchInput =
+                document.getElementById(
+                    "search-input"
+                );
+
+
+            searchInput.value =
+                categoryName;
+
+
+            searchInput.dispatchEvent(
+                new Event("input")
+            );
+
+        }
+    );
+
+});
+
+
+/* =========================
+   EXPLORE BUTTON
+========================= */
+
+document
+.getElementById("explore-button")
+.addEventListener("click", function() {
+
+    document
+    .querySelector(".section-title")
+    .scrollIntoView({
+        behavior: "smooth"
+    });
+
+});
+
+
+/* =========================
+   START
+========================= */
 
 loadListings();
 
