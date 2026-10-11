@@ -11,7 +11,15 @@
 <title>ENY24 - Everything Nearby You</title>
 
 <style>
-
+1#account-panel input {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    margin: 12px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+}
 /* =========================
    GLOBAL
 ========================= */
@@ -96,6 +104,7 @@ header {
     cursor: pointer;
     white-space: nowrap;
 }
+   
 
 /* =========================
    HERO
@@ -605,8 +614,103 @@ footer p {
     >
         + Post
     </button>
+      <button
+    id="account-button"
+    class="post-button"
+    type="button"
+    style="background:#003893"
+>
+    Login / Signup
+</button>
 
 </header>
+      <!-- ENY24 EMAIL ACCOUNT PANEL -->
+<section id="account-panel" style="
+    display:none;
+    background:white;
+    padding:25px 6%;
+    border-bottom:1px solid #e5e5e5;
+">
+    <h2 id="account-heading">ENY24 Account</h2>
+    <p id="auth-status" style="margin-top:8px;color:#666">
+        Not signed in
+    </p>
+
+    <form id="email-signup-form" style="margin-top:20px">
+        <h3>Create an account</h3>
+
+        <input
+            id="signup-email"
+            type="email"
+            placeholder="Email address"
+            autocomplete="email"
+            required
+        >
+
+        <input
+            id="signup-password"
+            type="password"
+            placeholder="Password (at least 8 characters)"
+            autocomplete="new-password"
+            minlength="8"
+            required
+        >
+
+        <button type="submit" class="publish-button">
+            Sign Up
+        </button>
+    </form>
+
+    <form id="email-login-form" style="margin-top:24px">
+        <h3>Already have an account?</h3>
+
+        <input
+            id="login-email"
+            type="email"
+            placeholder="Email address"
+            autocomplete="email"
+            required
+        >
+
+        <input
+            id="login-password"
+            type="password"
+            placeholder="Password"
+            autocomplete="current-password"
+            required
+        >
+
+        <button type="submit" class="publish-button">
+            Log In
+        </button>
+    </form>
+
+    <button
+        id="auth-logout"
+        type="button"
+        class="cancel-button"
+        style="display:none;margin:18px 0 0"
+    >
+        Log Out
+    </button>
+
+    <button
+        id="auth-close"
+        type="button"
+        class="cancel-button"
+        style="margin-top:18px"
+    >
+        Close
+    </button>
+
+    <p
+        id="auth-message"
+        role="status"
+        aria-live="polite"
+        style="margin-top:15px"
+    ></p>
+</section>
+
 
 
 <!-- HERO -->
@@ -1194,6 +1298,154 @@ const supabaseClient =
         SUPABASE_URL,
         SUPABASE_KEY
     );
+      
+/* =========================
+   ENY24 EMAIL AUTH
+========================= */
+
+const accountPanel = document.getElementById("account-panel");
+const authMessage = document.getElementById("auth-message");
+const authStatus = document.getElementById("auth-status");
+
+function showAuthMessage(message) {
+    authMessage.textContent = message;
+}
+
+document.getElementById("account-button")
+    .addEventListener("click", async () => {
+        accountPanel.style.display =
+            accountPanel.style.display === "block"
+                ? "none"
+                : "block";
+
+        await refreshAuthStatus();
+        accountPanel.scrollIntoView({ behavior: "smooth" });
+    });
+
+document.getElementById("auth-close")
+    .addEventListener("click", () => {
+        accountPanel.style.display = "none";
+    });
+
+/* SIGN UP */
+
+document.getElementById("email-signup-form")
+    .addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const email = document.getElementById("signup-email")
+            .value.trim();
+
+        const password = document.getElementById("signup-password")
+            .value;
+
+        if (password.length < 8) {
+            showAuthMessage(
+                "Please use a password of at least 8 characters."
+            );
+            return;
+        }
+
+        showAuthMessage("Creating your account...");
+
+        const { data, error } =
+            await supabaseClient.auth.signUp({
+                email,
+                password
+            });
+
+        if (error) {
+            console.error("Signup error:", error);
+            showAuthMessage(error.message);
+            return;
+        }
+
+        if (data.session) {
+            showAuthMessage("Account created. You are signed in.");
+        } else {
+            showAuthMessage(
+                "Signup submitted. Check your email for a confirmation link before logging in."
+            );
+        }
+
+        await refreshAuthStatus();
+    });
+
+/* LOG IN */
+
+document.getElementById("email-login-form")
+    .addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const email = document.getElementById("login-email")
+            .value.trim();
+
+        const password = document.getElementById("login-password")
+            .value;
+
+        showAuthMessage("Signing in...");
+
+        const { error } =
+            await supabaseClient.auth.signInWithPassword({
+                email,
+                password
+            });
+
+        if (error) {
+            console.error("Login error:", error);
+            showAuthMessage(error.message);
+            return;
+        }
+
+        showAuthMessage("Login successful!");
+        await refreshAuthStatus();
+    });
+
+/* LOG OUT */
+
+document.getElementById("auth-logout")
+    .addEventListener("click", async () => {
+        const { error } = await supabaseClient.auth.signOut();
+
+        if (error) {
+            console.error("Logout error:", error);
+            showAuthMessage(error.message);
+            return;
+        }
+
+        showAuthMessage("You have logged out.");
+        await refreshAuthStatus();
+    });
+
+/* DISPLAY CURRENT ACCOUNT */
+
+async function refreshAuthStatus() {
+    const { data, error } = await supabaseClient.auth.getUser();
+
+    const user = error ? null : data.user;
+
+    authStatus.textContent = user
+        ? "Signed in as " + user.email
+        : "Not signed in";
+
+    document.getElementById("auth-logout").style.display =
+        user ? "inline-block" : "none";
+
+    document.getElementById("account-button").textContent =
+        user ? "My Account" : "Login / Signup";
+
+    document.getElementById("email-signup-form").style.display =
+        user ? "none" : "block";
+
+    document.getElementById("email-login-form").style.display =
+        user ? "none" : "block";
+}
+
+/* RESTORE LOGIN AFTER PAGE REFRESH */
+
+
+
+refreshAuthStatus();
 
 
 /* =========================
