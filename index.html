@@ -2213,13 +2213,19 @@ document
         in the next step.
         */
 
+const { data: authData, error: authError } =
+await supabaseClient.auth.getUser();
 
+if (authError || !authData.user) {
+message.textContent = "Please log in before publishing.";
+return;
+}
         const {
             error
         } =
             await supabaseClient
             .from("listings")
-            .insert({
+            .insert({user_id: authData.user.id,
 
                 listing_type:
                     listingType,
