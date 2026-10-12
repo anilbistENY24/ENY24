@@ -1467,32 +1467,191 @@ let selectedImages = [];
    LOAD LISTINGS
 ========================= */
 
-
-   async function loadListings() {
+async function displayListings() {
     const products = document.getElementById("products");
 
     if (!products) {
-        console.error('Element with id="products" was not found.');
+        console.error('ENY24: Cannot find #products element.');
         return;
     }
 
     products.innerHTML = "<p>Loading listings...</p>";
 
-    const { data, error } = await supabaseClient
-        .from("listings")
-        .select("*")
-        .order("id", { ascending: false });
+    try {
+        const { data, error } = await supabaseClient
+            .from("listings")
+            .select("*")
+            .order("id", { ascending: false });
 
-    if (error) {
-        console.error("Supabase error:", error);
-        products.innerHTML = "<p>Unable to load listings.</p>";
-        return;
+        if (error) {
+            console.error("ENY24 loading error:", error);
+            products.innerHTML =
+                "<p>Unable to load listings. Please refresh the page.</p>";
+            return;
+        }
+
+        allListings = data || [];
+
+        const { data: authData } =
+            await supabaseClient.auth.getUser();
+
+        const user = authData?.user || null;
+
+        const filtered = allListings.filter(listing => {
+            const title = String(listing.title || "").toLowerCase();
+            const description =
+                String(listing.description || "").toLowerCase();
+            const location =
+                String(listing.location || "").toLowerCase();
+            const category =
+                String(listing.category || "").toLowerCase();
+            const type =
+                String(listing.listing_type || "").toLowerCase();
+
+            const matchesSearch =
+                !searchText ||
+                title.includes(searchText) ||
+                description.includes(searchText) ||
+                location.includes(searchText) ||
+                category.includes(searchText);
+
+            const matchesCategory =
+                selectedCategory === "All" ||
+                category === String(selectedCategory).toLowerCase();
+
+            const matchesType =
+                selectedType === "All" ||
+                type === String(selectedType).toLowerCase();
+
+            return matchesSearch && matchesCategory && matchesType;
+        });
+
+        products.innerHTML = "";
+
+        if (filtered.length === 0) {
+            products.innerHTML = `
+                <div style="
+                    background:white;
+                    padding:30px;
+                    border-radius:15px;
+                    grid-column:1/-1;
+                    text-align:center;
+                    color:#777;
+                ">
+                    No listings found.
+                </div>
+            `;
+
+            if (typeof updateFilterText === "function") {
+                updateFilterText();
+            }
+            return;
+        }
+
+        filtered.forEach(listing => {
+            const card = document.createElement("div");
+            card.className = "product";
+
+            const image = listing.image_url
+                ? `<img src="${escapeHTML(listing.image_url)}"
+                         alt="${escapeHTML(listing.title || "Listing")}">`
+                : "";
+
+            let icon = "📦";
+
+            if (listing.category === "Room for Rent") icon = "🛏️";
+            else if (listing.category === "Apartment for Rent") icon = "🏢";
+            else if (listing.category === "House for Rent") icon = "🏡";
+            else if (listing.listing_type === "Jobs") icon = "💼";
+
+            const isOwner =
+                Boolean(user && listing.user_id === user.id);
+
+            card.innerHTML = `
+                <div class="product-image">
+                    ${image || icon}
+                </div>
+
+                <div class="product-info">
+                    <div class="product-name">
+                        ${escapeHTML(listing.title || "")}
+                    </div>
+
+                    <div class="price">
+                        NPR ${Number(listing.price || 0).toLocaleString()}
+                    </div>
+
+                    <div class="place">
+                        📍 ${escapeHTML(listing.location || "")}
+                    </div>
+
+                    <div class="category-label">
+                        ${escapeHTML(listing.category || "")}
+                    </div>
+
+                    ${isOwner ? `
+                        <div class="listing-actions">
+                            <button type="button" class="edit-listing">
+                                Edit
+                            </button>
+                            <button type="button" class="delete-listing">
+                                Delete
+                            </button>
+                        </div>
+                    ` : ""}
+                </div>
+            `;
+
+            if (isOwner) {
+                card.querySelector(".edit-listing").addEventListener(
+                    "click",
+                    () => {
+                        alert(
+                            "Edit-and-save is not connected yet. " +
+                            "Your listing has not been changed."
+                        );
+                    }
+                );
+
+                card.querySelector(".delete-listing").addEventListener(
+                    "click",
+                    async () => {
+                        if (!confirm(
+                            "Are you sure you want to delete this listing?"
+                        )) return;
+
+                        const { error: deleteError } = await supabaseClient
+                            .from("listings")
+                            .delete()
+                            .eq("id", listing.id)
+                            .eq("user_id", user.id);
+
+                        if (deleteError) {
+                            console.error("ENY24 delete error:", deleteError);
+                            alert("Delete failed: " + deleteError.message);
+                            return;
+                        }
+
+                        alert("Listing deleted.");
+                        await loadListings();
+                    }
+                );
+            }
+
+            products.appendChild(card);
+        });
+
+        if (typeof updateFilterText === "function") {
+            updateFilterText();
+        }
+
+    } catch (error) {
+        console.error("ENY24 display error:", error);
+        products.innerHTML =
+            "<p>Something went wrong loading listings. Check Console.</p>";
     }
-
-    allListings = data || [];
-
-    await displayListings();
 }
+
 
 
 
