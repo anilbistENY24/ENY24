@@ -1469,50 +1469,32 @@ let selectedImages = [];
 
 async function loadListings() {
 
-    const products =
-        document.getElementById(
-            "products"
-        );
+   async function loadListings() {
+    const products = document.getElementById("products");
 
-
-    products.innerHTML =
-        "<p>Loading listings...</p>";
-
-
-    const {
-        data,
-        error
-    } =
-        await supabaseClient
-        .from("listings")
-        .select("*")
-        .order("id", {
-            ascending: false
-        });
-
-
-    if (error) {
-
-        console.error(
-            "Supabase error:",
-            error
-        );
-
-
-        products.innerHTML =
-            "<p>Unable to load listings.</p>";
-
+    if (!products) {
+        console.error('Element with id="products" was not found.');
         return;
     }
 
+    products.innerHTML = "<p>Loading listings...</p>";
 
-    allListings =
-        data || [];
+    const { data, error } = await supabaseClient
+        .from("listings")
+        .select("*")
+        .order("id", { ascending: false });
 
+    if (error) {
+        console.error("Supabase error:", error);
+        products.innerHTML = "<p>Unable to load listings.</p>";
+        return;
+    }
 
-    displayListings();
+    allListings = data || [];
 
+    await displayListings();
 }
+
 
 
 /* =========================
