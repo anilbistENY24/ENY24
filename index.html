@@ -1520,96 +1520,47 @@ async function loadListings() {
 ========================= */
 
 function displayListings() {
+async function displayListings() {
+    const products = document.getElementById("products");
 
-    const products =
-        document.getElementById(
-            "products"
-        );
-
+    if (!products) return;
 
     products.innerHTML = "";
 
+    const { data: { user }, error: authError } =
+        await supabaseClient.auth.getUser();
 
-    const filtered =
-        allListings.filter(
-            listing => {
+    if (authError) {
+        console.error("Authentication error:", authError);
+    }
 
-                const title =
-                    String(
-                        listing.title || ""
-                    ).toLowerCase();
+    const filtered = (allListings || []).filter(listing => {
+        const title = String(listing.title || "").toLowerCase();
+        const description = String(listing.description || "").toLowerCase();
+        const location = String(listing.location || "").toLowerCase();
+        const category = String(listing.category || "").toLowerCase();
+        const type = String(listing.listing_type || "").toLowerCase();
 
+        const matchesSearch =
+            !searchText ||
+            title.includes(searchText) ||
+            description.includes(searchText) ||
+            location.includes(searchText) ||
+            category.includes(searchText);
 
-                const description =
-                    String(
-                        listing.description || ""
-                    ).toLowerCase();
+        const matchesCategory =
+            selectedCategory === "All" ||
+            category === selectedCategory.toLowerCase();
 
+        const matchesType =
+            selectedType === "All" ||
+            type === selectedType.toLowerCase();
 
-                const location =
-                    String(
-                        listing.location || ""
-                    ).toLowerCase();
+        return matchesSearch && matchesCategory && matchesType;
+    });
 
-
-                const category =
-                    String(
-                        listing.category || ""
-                    ).toLowerCase();
-
-
-                const type =
-                    String(
-                        listing.listing_type || ""
-                    ).toLowerCase();
-
-
-                const matchesSearch =
-                    !searchText ||
-                    title.includes(
-                        searchText
-                    ) ||
-                    description.includes(
-                        searchText
-                    ) ||
-                    location.includes(
-                        searchText
-                    ) ||
-                    category.includes(
-                        searchText
-                    );
-
-
-                const matchesCategory =
-                    selectedCategory === "All" ||
-                    category ===
-                    selectedCategory
-                    .toLowerCase();
-
-
-                const matchesType =
-                    selectedType === "All" ||
-                    type ===
-                    selectedType
-                    .toLowerCase();
-
-
-                return (
-                    matchesSearch &&
-                    matchesCategory &&
-                    matchesType
-                );
-
-            }
-        );
-
-
-    if (
-        filtered.length === 0
-    ) {
-
+    if (filtered.length === 0) {
         products.innerHTML = `
-
             <div style="
                 background:white;
                 padding:30px;
@@ -1618,147 +1569,153 @@ function displayListings() {
                 text-align:center;
                 color:#777;
             ">
-
                 No listings found.
-
             </div>
-
         `;
 
+        updateFilterText();
         return;
     }
 
+    filtered.forEach(listing => {
+        const card = document.createElement("div");
+        card.className = "product";
 
-    filtered.forEach(
-        listing => {
+        let imageHTML = "📦";
 
-            const card =
-                document.createElement(
-                    "div"
-                );
-
-
-            card.className =
-                "product";
-
-
-            let imageHTML =
-                "📦";
-
-
-            if (
-                listing.image_url &&
-                listing.image_url.trim() !== ""
-            ) {
-
-                imageHTML = `
-
-                    <img
-                        src="${escapeHTML(
-                            listing.image_url
-                        )}"
-                        alt="${escapeHTML(
-                            listing.title
-                        )}"
-                    >
-
-                `;
-
-            }
-
-
-            let icon = "📦";
-
-
-            if (
-                listing.category ===
-                "Room for Rent"
-            ) {
-
-                icon = "🛏️";
-
-            } else if (
-                listing.category ===
-                "Apartment for Rent"
-            ) {
-
-                icon = "🏢";
-
-            } else if (
-                listing.category ===
-                "House for Rent"
-            ) {
-
-                icon = "🏡";
-
-            } else if (
-                listing.listing_type ===
-                "Jobs"
-            ) {
-
-                icon = "💼";
-
-            }
-
-
-            if (
-                imageHTML === "📦"
-            ) {
-
-                imageHTML =
-                    icon;
-
-            }
-
-
-            card.innerHTML = `
-
-                <div class="product-image">
-                    ${imageHTML}
-                </div>
-
-                <div class="product-info">
-
-                    <div class="product-name">
-                        ${escapeHTML(
-                            listing.title
-                        )}
-                    </div>
-
-                    <div class="price">
-                        NPR ${Number(
-                            listing.price || 0
-                        ).toLocaleString()}
-                    </div>
-
-                    <div class="place">
-                        📍 ${escapeHTML(
-                            listing.location
-                        )}
-                    </div>
-
-                    <div class="category-label">
-                        ${escapeHTML(
-                            listing.category
-                        )}
-                    </div>
-
-                </div>
-
+        if (listing.image_url && listing.image_url.trim() !== "") {
+            imageHTML = `
+                <img
+                    src="${escapeHTML(listing.image_url)}"
+                    alt="${escapeHTML(listing.title)}"
+                >
             `;
+        }
 
+        let icon = "📦";
 
-            products.appendChild(
-                card
+        if (listing.category === "Room for Rent") {
+            icon = "🛏️";
+        } else if (listing.category === "Apartment for Rent") {
+            icon = "🏢";
+        } else if (listing.category === "House for Rent") {
+            icon = "🏡";
+        } else if (listing.listing_type === "Jobs") {
+            icon = "💼";
+        }
+
+        if (imageHTML === "📦") {
+            imageHTML = icon;
+        }
+
+        const isOwner = Boolean(
+            user && listing.user_id === user.id
+        );
+
+        card.innerHTML = `
+            <div class="product-image">
+                ${imageHTML}
+            </div>
+
+            <div class="product-info">
+                <div class="product-name">
+                    ${escapeHTML(listing.title)}
+                </div>
+
+                <div class="price">
+                    NPR ${Number(listing.price || 0).toLocaleString()}
+                </div>
+
+                <div class="place">
+                    📍 ${escapeHTML(listing.location)}
+                </div>
+
+                <div class="category-label">
+                    ${escapeHTML(listing.category)}
+                </div>
+
+                ${isOwner ? `
+                    <div class="listing-actions">
+                        <button type="button" class="edit-listing">
+                            Edit
+                        </button>
+                        <button type="button" class="delete-listing">
+                            Delete
+                        </button>
+                    </div>
+                ` : ""}
+            </div>
+        `;
+
+        if (isOwner) {
+            card.querySelector(".edit-listing").addEventListener(
+                "click",
+                () => {
+                    const form = document.getElementById("post-form");
+
+                    if (!form) {
+                        alert("Posting form not found.");
+                        return;
+                    }
+
+                    const fieldValues = {
+                        title: listing.title || "",
+                        price: listing.price ?? "",
+                        location: listing.location || "",
+                        description: listing.description || ""
+                    };
+
+                    Object.entries(fieldValues).forEach(([name, value]) => {
+                        const field = form.elements.namedItem(name);
+
+                        if (field) {
+                            field.value = value;
+                        }
+                    });
+
+                    alert(
+                        "Listing details loaded into the form. " +
+                        "Saving edits is not enabled yet. " +
+                        "Do not submit until the update handler is added."
+                    );
+
+                    openPostForm();
+                }
             );
 
-        }
-    );
+            card.querySelector(".delete-listing").addEventListener(
+                "click",
+                async () => {
+                    const confirmed = confirm(
+                        "Are you sure you want to permanently delete this listing?"
+                    );
 
+                    if (!confirmed) return;
+
+                    const { error } = await supabaseClient
+                        .from("listings")
+                        .delete()
+                        .eq("id", listing.id)
+                        .eq("user_id", user.id);
+
+                    if (error) {
+                        console.error("Delete error:", error);
+                        alert("Could not delete listing: " + error.message);
+                        return;
+                    }
+
+                    alert("Listing deleted successfully.");
+                    await loadListings();
+                }
+            );
+        }
+
+        products.appendChild(card);
+    });
 
     updateFilterText();
-
 }
+
 
 
 /* =========================
